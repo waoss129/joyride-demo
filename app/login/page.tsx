@@ -10,11 +10,19 @@ export default function LoginPage() {
   // Bốc thông tin chuyển hướng từ link URL sang (nếu có)
   const redirectTarget = searchParams.get("redirect"); // 'booking-time'
   const service = searchParams.get("service"); // 'hair' / 'nail' / 'spa'
+  const combo = searchParams.get("combo");
+  const price = searchParams.get("price");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Hàm xử lý chuyển hướng sang trang đăng ký bảo toàn tham số URL
+  const handleNavigateToRegister = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    router.push(`/register?${params.toString()}`);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,20 +44,14 @@ export default function LoginPage() {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       localStorage.setItem("isLoggedIn", "true");
 
-      // Lấy thông tin combo và giá tiền (nếu có từ URL)
-      const combo = searchParams.get("combo");
-      const price = searchParams.get("price");
-
       // KIỂM TRA ĐIỀU HƯỚNG THÔNG MINH
       if (redirectTarget === "booking-time" && service) {
-        // Xây dựng đường dẫn với các tham số đi kèm
         let nextUrl = `/booking-time?service=${service}`;
         if (combo) nextUrl += `&combo=${combo}`;
         if (price) nextUrl += `&price=${price}`;
 
         router.push(nextUrl);
       } else {
-        // Nếu không có yêu cầu chuyển hướng, về trang chủ
         router.push("/");
       }
     } catch (err: any) {
@@ -100,8 +102,7 @@ export default function LoginPage() {
               </p>
             ) : (
               <p className="text-sm text-stone-500 font-medium">
-                Đăng nhập để quản lý lịch hẹn và nhận ưu đãi độc quyền từ
-                JoyRide.
+                Đăng nhập để quản lý lịch hẹn và nhận ưu đãi độc quyền từ JoyRide.
               </p>
             )}
           </div>
@@ -174,7 +175,11 @@ export default function LoginPage() {
           <div className="mt-8 pt-6 border-t border-stone-100 text-center">
             <p className="text-sm text-stone-500 font-medium">
               Bạn chưa có tài khoản?{" "}
-              <span className="text-pink-600 font-bold hover:underline cursor-pointer">
+              {/* ĐÃ SỬA: Thêm onClick gọi hàm chuyển hướng bảo toàn url query */}
+              <span 
+                onClick={handleNavigateToRegister}
+                className="text-pink-600 font-bold hover:underline cursor-pointer"
+              >
                 Đăng ký ngay
               </span>
             </p>
