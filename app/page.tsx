@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
-// CẤU HÌNH THƯ MỤC VÀ ĐỔ BÓNG MÀU PASTEL (GIỮ NGUYÊN GỐC)
+// CẤU HÌNH THƯ MỤC VÀ ĐỔ BÓNG MÀU PASTEL
 const GRID_DISPLAY_CONFIG = {
   hair: {
     tag: "Hair Trend",
@@ -52,11 +52,9 @@ function ServiceCard({ item }: { item: any }) {
 
   useEffect(() => {
     if (images.length <= 1) return;
-
     const interval = setInterval(() => {
       setCurrentImgIndex((prev) => (prev + 1) % images.length);
     }, 3000);
-
     return () => clearInterval(interval);
   }, [images]);
 
@@ -74,9 +72,7 @@ function ServiceCard({ item }: { item: any }) {
           }}
         />
       ))}
-
       <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/20 to-transparent z-10" />
-
       <span
         className={`text-[11px] font-bold tracking-widest uppercase mb-1.5 z-20 block transition-all duration-300 ${item.textColor}`}
       >
@@ -92,27 +88,17 @@ function ServiceCard({ item }: { item: any }) {
 // GIAO DIỆN CHÍNH JOYRIDE TRANG CHỦ
 export default function JoyRideHomePage() {
   const router = useRouter();
-  const handleServiceSelect = (serviceKey: string) => {
-    // Kiểm tra xem khách đã đăng nhập chưa (giả lập bằng localStorage)
-    const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-
-    if (!isLoggedIn) {
-      alert('🔒 Bạn cần đăng nhập tài khoản trước khi tiến hành đặt lịch hẹn!');
-      // Chuyển sang login, đính kèm thông tin dịch vụ để tí đăng nhập xong tự quay lại
-      router.push(`/login?redirect=booking-time&service=${serviceKey}`);
-    } else {
-      // Nếu đã đăng nhập, sang thẳng trang đặt lịch kèm dịch vụ đã chọn
-      router.push(`/booking-time?service=${serviceKey}`);
-    }
-  };
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("home");
+
+  const handleServiceSelect = (serviceKey: string) => {
+    router.push(`/${serviceKey}`);
+  };
 
   useEffect(() => {
     const scrollTarget = searchParams.get("scroll");
     if (scrollTarget === "services") {
       setActiveTab("services");
-
       const timer = setTimeout(() => {
         const element = document.getElementById("services-section");
         if (element) {
@@ -120,14 +106,9 @@ export default function JoyRideHomePage() {
           const bodyRect = document.body.getBoundingClientRect().top;
           const elementRect = element.getBoundingClientRect().top;
           const offsetPosition = elementRect - bodyRect - offset;
-
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: "smooth",
-          });
+          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
         }
       }, 350);
-
       return () => clearTimeout(timer);
     }
   }, [searchParams]);
@@ -149,7 +130,6 @@ export default function JoyRideHomePage() {
       const bodyRect = document.body.getBoundingClientRect().top;
       const elementRect = element.getBoundingClientRect().top;
       const offsetPosition = elementRect - bodyRect - offset;
-
       window.scrollTo({ top: offsetPosition, behavior: "smooth" });
     }
   };
@@ -179,31 +159,19 @@ export default function JoyRideHomePage() {
           <div className="hidden sm:flex items-center gap-10 text-[15px] font-medium text-stone-700 tracking-wide">
             <span
               onClick={handleHomeClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${
-                activeTab === "home"
-                  ? "border-[#FBBFDC] text-stone-900 font-semibold"
-                  : "border-transparent hover:text-stone-900"
-              }`}
+              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "home" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
             >
               Trang chủ
             </span>
             <span
               onClick={handleServicesClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${
-                activeTab === "services"
-                  ? "border-[#FBBFDC] text-stone-900 font-semibold"
-                  : "border-transparent hover:text-stone-900"
-              }`}
+              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "services" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
             >
               Dịch vụ
             </span>
             <span
               onClick={handleContactClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${
-                activeTab === "contact"
-                  ? "border-[#FBBFDC] text-stone-900 font-semibold"
-                  : "border-transparent hover:text-stone-900"
-              }`}
+              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "contact" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
             >
               Liên hệ
             </span>
@@ -269,7 +237,7 @@ export default function JoyRideHomePage() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div
-              onClick={() => handleServiceSelect('hair')}
+              onClick={() => handleServiceSelect("hair")}
               className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[#CFECF3]/20 hover:border-pink-300 transition-all cursor-pointer hover:shadow-md"
             >
               <div className="text-3xl">💇</div>
@@ -282,7 +250,7 @@ export default function JoyRideHomePage() {
             </div>
 
             <div
-              onClick={() => handleServiceSelect('nail')}
+              onClick={() => handleServiceSelect("nail")}
               className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[#CFECF3]/20 hover:border-pink-300 transition-all cursor-pointer hover:shadow-md"
             >
               <div className="text-3xl">💅</div>
@@ -295,7 +263,7 @@ export default function JoyRideHomePage() {
             </div>
 
             <div
-              onClick={() => handleServiceSelect('spa')}
+              onClick={() => handleServiceSelect("spa")}
               className="bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-[#CFECF3]/20 hover:border-pink-300 transition-all cursor-pointer hover:shadow-md"
             >
               <div className="text-3xl">💆</div>
