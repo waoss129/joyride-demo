@@ -43,7 +43,7 @@ export default function SpaPage() {
               <div className="text-3xl font-black text-emerald-400 mb-6">
                 {service.price}
               </div>
-              <Link href="/booking">
+              <Link href={`/booking?service=${encodeURIComponent(service.title)}`}>
                 <button className="w-full py-4 rounded-2xl bg-stone-900 text-white font-bold tracking-widest uppercase text-xs hover:bg-emerald-500 hover:text-stone-900 transition-colors duration-300">
                   Chọn ngay
                 </button>
