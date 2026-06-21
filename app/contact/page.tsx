@@ -93,11 +93,11 @@ export default function ContactPage() {
               </h3>
               <div className="space-y-4 text-stone-600 font-medium text-sm">
                 <p>
-                  📍 <strong>Địa chỉ:</strong> 123 Đường Bông Hồng Pastel, Q.1,
+                  📍 <strong>Địa chỉ:</strong> 180 Cao Lỗ, Phường Chánh Hưng,
                   TP. HCM
                 </p>
                 <p>
-                  📞 <strong>Hotline:</strong> 1900 xxxx
+                  📞 <strong>Hotline:</strong> 1900 1234
                 </p>
                 <p>
                   ✉️ <strong>Email:</strong> hello@joyridebeauty.com
@@ -214,7 +214,7 @@ export default function ContactPage() {
               </p>
               <p>Hoặc bạn cũng có thể liên hệ trực tiếp với chúng tôi:</p>
               <p className="font-bold text-stone-800 pt-1">
-                Điện thoại: 1900 xxxx
+                Điện thoại: 1900 1234
               </p>
               <p>Thứ Hai đến Thứ Sáu: 8:00 - 17:00</p>
               <p>Thứ Bảy: 9:00 - 18:00</p>

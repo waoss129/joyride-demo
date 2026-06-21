@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useEffect } from "react";
 
+// ... [Giữ nguyên GRID_DISPLAY_CONFIG và ServiceCard như cũ] ...
 // CẤU HÌNH THƯ MỤC VÀ ĐỔ BÓNG MÀU PASTEL
 const GRID_DISPLAY_CONFIG = {
   hair: {
@@ -85,65 +86,33 @@ function ServiceCard({ item }: { item: any }) {
   );
 }
 
-// GIAO DIỆN CHÍNH JOYRIDE TRANG CHỦ
-export default function JoyRideHomePage() {
+export default function ClientDashboardPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("home");
-
-  const handleServiceSelect = (serviceKey: string) => {
-    router.push(`/${serviceKey}`);
-  };
-
-  useEffect(() => {
-    const scrollTarget = searchParams.get("scroll");
-    if (scrollTarget === "services") {
-      setActiveTab("services");
-      const timer = setTimeout(() => {
-        const element = document.getElementById("services-section");
-        if (element) {
-          const offset = 80;
-          const bodyRect = document.body.getBoundingClientRect().top;
-          const elementRect = element.getBoundingClientRect().top;
-          const offsetPosition = elementRect - bodyRect - offset;
-          window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-        }
-      }, 350);
-      return () => clearTimeout(timer);
-    }
-  }, [searchParams]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState("home"); // Đã sửa lỗi thiếu biến
 
   const handleHomeClick = () => {
     setActiveTab("home");
-    if (searchParams.get("scroll")) {
-      router.push("/");
-    } else {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  };
-
-  const handleServicesClick = () => {
-    setActiveTab("services");
-    const element = document.getElementById("services-section");
-    if (element) {
-      const offset = 80;
-      const bodyRect = document.body.getBoundingClientRect().top;
-      const elementRect = element.getBoundingClientRect().top;
-      const offsetPosition = elementRect - bodyRect - offset;
-      window.scrollTo({ top: offsetPosition, behavior: "smooth" });
-    }
+    router.push("/");
   };
 
   const handleContactClick = () => {
-    setActiveTab("contact");
     router.push("/contact");
+  };
+
+  // Hàm trỏ về trang chủ và cuộn đến vị trí
+  const handleNavigateTo = (target: string) => {
+    setActiveTab(target);
+    router.push(`/?scroll=${target}`);
   };
 
   return (
     <div className="min-h-screen bg-[#FFFDF0] text-stone-800 font-sans antialiased selection:bg-[#FBBFDC]">
-      {/* 1. THANH MENU TRÊN CÙNG (NAVBAR) */}
-      <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#CFECF3] px-8 py-4 shadow-sm shadow-blue-50/10">
+      {/* 1. NAVBAR DÀNH CHO KHÁCH HÀNG */}
+      <nav className="bg-white/90 backdrop-blur-md sticky top-0 z-50 border-b border-[#CFECF3] px-8 py-4 shadow-sm">
         <div className="max-w-6xl mx-auto flex justify-between items-center">
+          {/* Logo */}
           <div
             className="flex items-center gap-2 cursor-pointer"
             onClick={handleHomeClick}
@@ -151,38 +120,67 @@ export default function JoyRideHomePage() {
             <span className="text-2xl font-black bg-gradient-to-r from-[#FBBFDC] to-[#99DDF0] bg-clip-text text-transparent tracking-wider font-mono">
               JoyRide
             </span>
-            <span className="text-xs font-bold uppercase tracking-widest text-stone-400 border-l border-stone-200 pl-2 hidden md:inline">
-              Beauty Studio
-            </span>
           </div>
 
+          {/* Menu Điều hướng */}
           <div className="hidden sm:flex items-center gap-10 text-[15px] font-medium text-stone-700 tracking-wide">
+            <div className="flex flex-col items-center">
+              <span
+                className="cursor-pointer text-stone-900 font-bold"
+                onClick={handleHomeClick}
+              >
+                Trang chủ
+              </span>
+              <div className="w-8 h-[2px] bg-[#FBBFDC] mt-1" />
+            </div>
             <span
-              onClick={handleHomeClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "home" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
-            >
-              Trang chủ
-            </span>
-            <span
-              onClick={handleServicesClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "services" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
+              className="cursor-pointer text-stone-600 hover:text-stone-900 transition-colors"
+              onClick={() => handleNavigateTo("services")}
             >
               Dịch vụ
             </span>
             <span
-              onClick={handleContactClick}
-              className={`cursor-pointer pb-2 transition-all duration-150 border-b-2 ${activeTab === "contact" ? "border-[#FBBFDC] text-stone-900 font-semibold" : "border-transparent hover:text-stone-900"}`}
+              className="cursor-pointer text-stone-600 hover:text-stone-900 transition-colors"
+              onClick={() => handleNavigateTo("contact")}
             >
               Liên hệ
             </span>
           </div>
 
-          <button
-            onClick={() => router.push("/login")}
-            className="bg-[#FBBFDC] hover:bg-[#F9A8CB] text-stone-700 font-bold py-2.5 px-7 rounded-full text-xs tracking-widest uppercase shadow-sm shadow-pink-100 transition-all duration-200 transform hover:scale-[1.02]"
-          >
-            Đăng nhập
-          </button>
+          {/* Avatar và Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              className="w-10 h-10 rounded-full bg-gradient-to-tr from-[#FBBFDC] to-[#99DDF0] border-2 border-white shadow-md hover:scale-105 transition-transform"
+            />
+            {isDropdownOpen && (
+              <div className="absolute right-0 mt-3 w-48 bg-white rounded-2xl shadow-xl border border-stone-100 py-2 z-50">
+                <div className="px-4 py-2 border-b border-stone-50">
+                  <p className="text-xs font-bold text-stone-800">
+                    Nguyễn Văn A
+                  </p>
+                </div>
+                <button
+                  onClick={() => router.push("/client-dashboard/profile")}
+                  className="w-full text-left px-4 py-2 text-sm text-stone-600 hover:bg-stone-50 transition"
+                >
+                  Hồ sơ cá nhân
+                </button>
+                <button
+                  onClick={() => router.push("/client-dashboard/appointment")}
+                  className="w-full text-left px-4 py-2 text-sm text-stone-600 hover:bg-stone-50 transition"
+                >
+                  Lịch hẹn của tôi
+                </button>
+                <button
+                  onClick={() => router.push("/")}
+                  className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-50"
+                >
+                  Đăng xuất
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </nav>
 
